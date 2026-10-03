@@ -13,10 +13,31 @@ python3 -m http.server 4173
 
 Depois abra <http://localhost:4173>.
 
-## Publicar
+## No ar
+
+Publicado via **GitHub Pages**, a partir da branch `main` (raiz do repositório):
+
+**https://hctoliv.github.io/plenalab-site/**
+
+Todo push na `main` republica o site sozinho, em cerca de um minuto.
+
+## Apontar o domínio da empresa
+
+Para servir em `plena-lab.com.br` (ou `www.plena-lab.com.br`) em vez da URL do GitHub:
+
+1. Criar na raiz do repositório um arquivo `CNAME` com uma linha: `www.plena-lab.com.br`
+2. No DNS do domínio (hoje na Locaweb), apontar:
+   - `www` como `CNAME` para `hctoliv.github.io`
+   - o domínio raiz como `A` para `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153` e `185.199.111.153`
+3. Em *Settings > Pages* no GitHub, preencher o Custom domain e marcar *Enforce HTTPS*
+
+O certificado leva alguns minutos para sair depois que o DNS propaga.
+
+## Publicar em outro lugar
 
 Como é HTML estático, basta subir `index.html` e a pasta `assets/` para a raiz do
-domínio: servidor atual (Locaweb), Netlify, Vercel, Cloudflare Pages ou GitHub Pages.
+domínio: servidor atual (Locaweb), Netlify, Vercel ou Cloudflare Pages.
 Nada precisa ser compilado.
 
 ## Estrutura da página
