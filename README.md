@@ -1,4 +1,4 @@
-# Plena-Lab — site institucional
+# Plena-Lab | site institucional
 
 Redesign do site da **Plena-Lab Indústria e Comércio de Vidrarias para Laboratório**
 (substitui o site atual em `plena-lab.com.br`, feito em Mobirise 4).
@@ -16,7 +16,7 @@ Depois abra <http://localhost:4173>.
 ## Publicar
 
 Como é HTML estático, basta subir `index.html` e a pasta `assets/` para a raiz do
-domínio — no servidor atual (Locaweb), em Netlify, Vercel, Cloudflare Pages ou GitHub Pages.
+domínio: servidor atual (Locaweb), Netlify, Vercel, Cloudflare Pages ou GitHub Pages.
 Nada precisa ser compilado.
 
 ## Estrutura da página
@@ -28,7 +28,7 @@ Nada precisa ser compilado.
 | Linhas | 9 cards com link direto para a categoria na `lojaplenalab.com.br` |
 | Fabricação | Fábrica, oficina sob desenho, aferição ISO, serigrafia, embalagem, laboratório |
 | Segmentos | 8 setores atendidos, cada um ancorado em produtos reais do catálogo |
-| Como comprar | Loja on-line (Pix 5%) × venda consultiva / licitação |
+| Como comprar | Loja on-line (Pix 5%) vs. venda consultiva / licitação |
 | Time | 7 pessoas, com e-mail e WhatsApp individuais |
 | FAQ | 9 perguntas em `<details>` (abre sem JavaScript) |
 | Contato | Formulário que monta a mensagem e abre o WhatsApp, + dados completos |
@@ -46,7 +46,7 @@ Nada precisa ser compilado.
 - **Performance:** ~490 KB de imagens no total, `loading="lazy"` abaixo da dobra,
   CSS e JS inline (um único request de HTML).
 
-## Conteúdo — de onde veio
+## Conteúdo: de onde veio
 
 Todo o texto factual saiu dos sites atuais da empresa (`plena-lab.com.br` e
 `lojaplenalab.com.br`): história, aferição ISO, oficina, serigrafia, embalagem,
@@ -55,9 +55,9 @@ As fotos de produto são as da própria loja.
 
 ## Pontos a confirmar antes de publicar
 
-- **Horário de atendimento:** o site institucional antigo diz 8h–18h e a loja diz
-  8h–17h30. Aqui está 8h–17h30 (o dado mais recente, da loja). Ajustar se necessário.
-- **CNPJ / Inscrição Estadual:** não constam em nenhum dos sites atuais; não foram
+- **Horário de atendimento:** o site institucional antigo diz 8h às 18h e a loja diz
+  8h às 17h30. Aqui está 8h às 17h30 (o dado mais recente, da loja). Ajustar se necessário.
+- **CNPJ / Inscrição Estadual:** não constam em nenhum dos sites atuais, então não foram
   incluídos no rodapé. Se quiser exibir, é só acrescentar.
-- **Favicon:** usa `assets/img/logo-azul.png` (300×100). Vale gerar um quadrado 512×512.
+- **Favicon:** usa `assets/img/logo-azul.png` (300x100). Vale gerar um quadrado de 512x512.
 - **Foto do time:** hoje os cards usam as iniciais. Com fotos reais a seção ganha muito.
