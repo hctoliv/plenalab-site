@@ -54,6 +54,12 @@
   --shadow-lg:0 40px 90px -40px rgba(4,10,40,.55);
   --ease:cubic-bezier(.22,.61,.36,1);
   --font:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+  /* papel milimetrado e escala de vidraria */
+  --grid-fine:rgba(255,255,255,.032);
+  --grid-bold:rgba(255,255,255,.068);
+  --tick:rgba(255,255,255,.16);
+  --liquid:rgba(20,52,224,.22);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -80,6 +86,85 @@ ul{margin:0;padding:0;list-style:none}
 .skip{position:absolute;left:-9999px;top:0;z-index:999;background:#fff;color:var(--brand-deep);padding:12px 18px;border-radius:0 0 12px 0;font-weight:700}
 .skip:focus{left:0}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- ambiente de laboratorio ---------- */
+
+/* papel milimetrado: malha fina de 14px sobre malha maior de 70px */
+.lab-paper{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid-fine) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px),
+    linear-gradient(var(--grid-bold) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-bold) 1px,transparent 1px);
+  background-size:14px 14px,14px 14px,70px 70px,70px 70px;
+}
+.lab-paper--light{
+  --grid-fine:rgba(16,38,110,.035);
+  --grid-bold:rgba(16,38,110,.062);
+}
+
+/* bolhas subindo no liquido */
+.bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.bubbles i{
+  position:absolute;bottom:-6%;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.55),rgba(165,208,255,.16) 44%,rgba(90,169,255,.05) 72%,transparent 74%);
+  box-shadow:inset 0 0 6px rgba(255,255,255,.22);
+  animation:rise linear infinite;
+}
+@keyframes rise{
+  0%{transform:translate3d(0,0,0) scale(.8);opacity:0}
+  10%{opacity:.7}
+  50%{transform:translate3d(16px,-46vh,0) scale(1)}
+  88%{opacity:.42}
+  100%{transform:translate3d(-12px,-100vh,0) scale(1.1);opacity:0}
+}
+
+/* regua: borda superior das secoes claras vira escala graduada */
+.scale-edge{
+  position:absolute;top:0;left:0;right:0;height:13px;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(16,38,110,.2) 0 1px,transparent 1px 13px);
+  mask-image:linear-gradient(180deg,#000,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent);
+}
+
+/* coluna graduada que enche conforme a leitura */
+.burette{
+  position:fixed;left:30px;top:50%;transform:translateY(-50%);z-index:80;
+  display:none;flex-direction:column;align-items:center;gap:12px;
+  --p:0%;
+}
+@media (min-width:1320px){.burette{display:flex}}
+.burette__tube{
+  position:relative;width:14px;height:min(44vh,360px);border-radius:7px;overflow:hidden;
+  border:1px solid rgba(132,156,214,.46);
+  background:linear-gradient(90deg,rgba(132,156,214,.18),rgba(132,156,214,.04) 44%,rgba(132,156,214,.2));
+  box-shadow:inset 0 0 10px rgba(90,120,190,.14);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.burette__fill{
+  position:absolute;left:0;right:0;bottom:0;height:var(--p);
+  background:linear-gradient(180deg,var(--brand) 0%,var(--brand-ink) 100%);
+  transition:height .18s linear;
+}
+.burette__fill::after{ /* menisco */
+  content:"";position:absolute;left:-10%;right:-10%;top:-5px;height:10px;border-radius:50%;
+  background:radial-gradient(60% 100% at 50% 100%,rgba(144,200,255,.95),rgba(90,169,255,.5) 60%,transparent 72%);
+}
+.burette__ticks{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(180deg,rgba(132,156,214,.44) 0 1px,transparent 1px 12px);
+  mask-image:linear-gradient(90deg,#000 0 46%,transparent 46%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 46%,transparent 46%);
+}
+.burette__read{
+  font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--brand-deep);
+  font-variant-numeric:tabular-nums;text-align:center;
+  padding:5px 9px;border-radius:999px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(132,156,214,.4);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.burette__read small{font-weight:600;opacity:.55;margin-left:1px}
 
 /* ---------- utilities ---------- */
 .eyebrow{
@@ -197,13 +282,24 @@ ul{margin:0;padding:0;list-style:none}
   position:relative;background:var(--ink);color:#fff;overflow:hidden;
   padding:clamp(120px,15vw,172px) 0 clamp(72px,9vw,112px);
 }
+@media (min-width:900px){
+  .hero{min-height:100svh;display:flex;align-items:center;padding-block:clamp(130px,13vw,160px)}
+}
 .hero__bg{position:absolute;inset:0;pointer-events:none}
 .hero__grid{
-  position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
-  background-size:68px 68px;
-  mask-image:radial-gradient(110% 80% at 18% 20%,#000 0%,transparent 72%);
-  -webkit-mask-image:radial-gradient(110% 80% at 18% 20%,#000 0%,transparent 72%);
+  mask-image:radial-gradient(120% 90% at 20% 18%,#000 0%,transparent 76%);
+  -webkit-mask-image:radial-gradient(120% 90% at 20% 18%,#000 0%,transparent 76%);
+}
+/* superficie do liquido na base do hero */
+.hero__meniscus{
+  position:absolute;left:-5%;right:-5%;bottom:-2px;height:clamp(90px,14vh,160px);
+  background:linear-gradient(180deg,transparent,rgba(20,52,224,.2) 55%,rgba(90,169,255,.14));
+  mask-image:radial-gradient(140% 100% at 50% 100%,#000 38%,transparent 74%);
+  -webkit-mask-image:radial-gradient(140% 100% at 50% 100%,#000 38%,transparent 74%);
+}
+.hero__meniscus::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(144,200,255,.38) 20%,rgba(144,200,255,.5) 50%,rgba(144,200,255,.38) 80%,transparent);
 }
 .hero__glow{
   position:absolute;width:min(1100px,110vw);aspect-ratio:1;border-radius:50%;
@@ -245,6 +341,13 @@ ul{margin:0;padding:0;list-style:none}
   box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,.14);
 }
 .showcase__card img{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:center 48%}
+.showcase__card::after{ /* reflexo de vidro */
+  content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(104deg,transparent 38%,rgba(255,255,255,.5) 46%,rgba(255,255,255,.1) 51%,transparent 58%);
+  transform:translateX(-130%);
+  animation:sweep 9s var(--ease) 2s infinite;
+}
+@keyframes sweep{0%{transform:translateX(-130%)}22%,100%{transform:translateX(130%)}}
 .showcase__chip{
   position:absolute;display:flex;align-items:center;gap:11px;
   padding:13px 17px;border-radius:16px;
@@ -265,21 +368,28 @@ ul{margin:0;padding:0;list-style:none}
 .stats{background:var(--ink);color:#fff;border-top:1px solid var(--line-dark);position:relative;z-index:1}
 .stats__in{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
 @media (min-width:860px){.stats__in{grid-template-columns:repeat(4,1fr)}}
-.stat{padding:clamp(26px,3.4vw,40px) clamp(14px,2.4vw,30px);border-top:1px solid var(--line-dark)}
+.stat{position:relative;padding:clamp(26px,3.4vw,40px) clamp(14px,2.4vw,30px);border-top:1px solid var(--line-dark)}
+.stat::before{
+  content:"";position:absolute;top:0;left:clamp(14px,2.4vw,30px);width:52px;height:9px;
+  background:repeating-linear-gradient(90deg,var(--tick) 0 1px,transparent 1px 7px);
+  mask-image:linear-gradient(180deg,#000,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent);
+}
 .stat:nth-child(odd){border-right:1px solid var(--line-dark)}
 @media (min-width:860px){
   .stat{border-top:0}
   .stat:nth-child(odd){border-right:0}
   .stat+.stat{border-left:1px solid var(--line-dark)}
 }
-.stat__n{font-size:clamp(34px,4.2vw,50px);font-weight:700;letter-spacing:-.036em;line-height:1;
+.stat__n{font-size:clamp(34px,4.2vw,50px);font-weight:700;letter-spacing:-.036em;line-height:1;font-variant-numeric:tabular-nums;
   background:linear-gradient(170deg,#fff 30%,rgba(255,255,255,.55));-webkit-background-clip:text;background-clip:text;color:transparent}
 .stat__l{margin-top:10px;font-size:13.5px;color:rgba(255,255,255,.58);font-weight:500;line-height:1.4;max-width:22ch}
 
 /* ============================================================
    LINHAS / CATEGORIAS
    ============================================================ */
-.lines{background:var(--paper-2)}
+.lines{background:var(--paper-2);position:relative;overflow:hidden}
+.lines>.wrap,.buy>.wrap,.faq>.wrap{position:relative}
 .lines__head{display:grid;gap:24px;align-items:end;margin-bottom:clamp(34px,4.6vw,54px)}
 @media (min-width:900px){.lines__head{grid-template-columns:1fr auto}}
 .grid-lines{display:grid;gap:clamp(14px,1.6vw,20px);grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
@@ -290,11 +400,25 @@ ul{margin:0;padding:0;list-style:none}
 }
 .line-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:#CFD9F0}
 .line-card__media{position:relative;aspect-ratio:4/3;background:linear-gradient(170deg,#F7F9FD,#EEF2FB);overflow:hidden}
+.line-card__liquid{
+  position:absolute;left:0;right:0;bottom:0;height:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(32,96,220,.17),rgba(20,52,224,.3));
+  transition:height .85s var(--ease);
+}
+.line-card__liquid::before{ /* menisco do liquido */
+  content:"";position:absolute;left:-4%;right:-4%;top:-11px;height:22px;border-radius:50%;
+  background:radial-gradient(56% 100% at 50% 100%,rgba(118,186,255,.85),rgba(42,104,228,.3) 62%,transparent 76%);
+}
+.line-card__liquid::after{ /* linha da superficie */
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(126,190,255,.9) 18%,rgba(160,210,255,.95) 50%,rgba(126,190,255,.9) 82%,transparent);
+}
+.line-card:hover .line-card__liquid,.line-card:focus-within .line-card__liquid{height:58%}
 .line-card__media img{width:100%;height:100%;object-fit:contain;padding:12% 16%;mix-blend-mode:multiply;
   transition:transform .6s var(--ease)}
 .line-card:hover .line-card__media img{transform:scale(1.055)}
 .line-card__n{
-  position:absolute;top:14px;left:14px;font-size:11.5px;font-weight:800;letter-spacing:.1em;
+  position:absolute;z-index:3;top:14px;left:14px;font-size:11.5px;font-weight:800;letter-spacing:.1em;
   color:var(--brand-deep);background:rgba(255,255,255,.85);border:1px solid var(--line);
   padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px);
 }
@@ -356,7 +480,7 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================
    COMPRAR
    ============================================================ */
-.buy{background:var(--paper-2)}
+.buy{background:var(--paper-2);position:relative;overflow:hidden}
 .buy-grid{display:grid;gap:clamp(16px,2vw,24px)}
 @media (min-width:900px){.buy-grid{grid-template-columns:1fr 1fr}}
 .buy-card{
@@ -421,7 +545,7 @@ ul{margin:0;padding:0;list-style:none}
 /* ============================================================
    FAQ
    ============================================================ */
-.faq{background:var(--paper-2)}
+.faq{background:var(--paper-2);position:relative;overflow:hidden}
 .faq__in{display:grid;gap:clamp(34px,5vw,64px)}
 @media (min-width:1000px){.faq__in{grid-template-columns:.8fr 1.2fr;align-items:start}}
 .faq-list{display:grid;gap:10px}
@@ -530,6 +654,9 @@ ul{margin:0;padding:0;list-style:none}
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;transition:none}
+  .bubbles,.showcase__card::after{display:none}
+  .line-card:hover .line-card__liquid,.line-card:focus-within .line-card__liquid{height:0}
+  .burette__fill{transition:none}
   *{animation-duration:.001ms !important;transition-duration:.001ms !important}
 }
 </style>
@@ -578,15 +705,25 @@ ul{margin:0;padding:0;list-style:none}
   </div>
 </div>
 
+<aside class="burette" id="burette" aria-hidden="true">
+  <div class="burette__tube">
+    <div class="burette__fill"></div>
+    <div class="burette__ticks"></div>
+  </div>
+  <div class="burette__read"><span id="burVal">0</span><small>%</small></div>
+</aside>
+
 <main id="main">
 <span id="top"></span>
 
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="hero__bg" aria-hidden="true">
-    <div class="hero__grid"></div>
+    <div class="lab-paper hero__grid"></div>
     <div class="hero__glow"></div>
     <div class="hero__glow hero__glow--2"></div>
+    <div class="bubbles" data-bubbles="18"></div>
+    <div class="hero__meniscus"></div>
   </div>
 
   <div class="wrap hero__in">
@@ -649,6 +786,8 @@ ul{margin:0;padding:0;list-style:none}
 
 <!-- ============ LINHAS ============ -->
 <section class="section lines" id="linhas">
+  <span class="scale-edge" aria-hidden="true"></span>
+  <div class="lab-paper lab-paper--light" aria-hidden="true" style="mask-image:linear-gradient(180deg,#000,transparent 46%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 46%)"></div>
   <div class="wrap">
     <div class="lines__head">
       <div class="rv">
@@ -666,6 +805,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">01</span>
           <img src="assets/img/becker.jpg" alt="Becker graduado de vidro borossilicato Plena-Lab" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Vidrarias</h3>
@@ -678,6 +818,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">02</span>
           <img src="assets/img/becker-pp.jpg" alt="Becker graduado em polipropileno" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Plásticos</h3>
@@ -690,6 +831,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">03</span>
           <img src="assets/img/porcelana.jpg" alt="Cápsula de evaporação de fundo chato em porcelana" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Porcelanas</h3>
@@ -702,6 +844,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">04</span>
           <img src="assets/img/agitador.jpg" alt="Agitador magnético digital de laboratório" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Equipamentos</h3>
@@ -714,6 +857,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">05</span>
           <img src="assets/img/pinca-inox.jpg" alt="Pinça de Mohr em aço inox" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Ferragens</h3>
@@ -726,6 +870,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">06</span>
           <img src="assets/img/inox.jpg" alt="Tacho de aço inox para laboratório" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Aço inox</h3>
@@ -738,6 +883,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">07</span>
           <img src="assets/img/rolha.jpg" alt="Rolha de borracha para vedação de laboratório" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Rolhas</h3>
@@ -750,6 +896,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card rv">
         <div class="line-card__media"><span class="line-card__n">08</span>
           <img src="assets/img/papel-filtro.jpg" alt="Papel filtro qualitativo 80 g, pacote com 100 unidades" loading="lazy" width="760" height="760">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Papel filtro</h3>
@@ -762,6 +909,7 @@ ul{margin:0;padding:0;list-style:none}
       <article class="line-card line-card--wide rv">
         <div class="line-card__media"><span class="line-card__n">09</span>
           <img src="assets/img/kit-farmacia.jpg" alt="Kit de vidraria para laboratório Plena-Lab" loading="lazy" width="760" height="507">
+          <span class="line-card__liquid"></span>
         </div>
         <div class="line-card__body">
           <h3>Kits para laboratório</h3>
@@ -777,6 +925,8 @@ ul{margin:0;padding:0;list-style:none}
 
 <!-- ============ FÁBRICA ============ -->
 <section class="section factory dark" id="fabrica">
+  <div class="lab-paper" aria-hidden="true" style="mask-image:radial-gradient(110% 90% at 80% 30%,#000,transparent 72%);-webkit-mask-image:radial-gradient(110% 90% at 80% 30%,#000,transparent 72%)"></div>
+  <div class="bubbles" data-bubbles="12" aria-hidden="true"></div>
   <div class="wrap factory__in">
     <div class="factory__aside rv">
       <span class="eyebrow">Fábrica &amp; oficina</span>
@@ -847,6 +997,8 @@ ul{margin:0;padding:0;list-style:none}
 
 <!-- ============ COMO COMPRAR ============ -->
 <section class="section buy" id="comprar">
+  <span class="scale-edge" aria-hidden="true"></span>
+  <div class="lab-paper lab-paper--light" aria-hidden="true" style="mask-image:linear-gradient(180deg,#000,transparent 50%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
   <div class="wrap">
     <div class="section-head rv">
       <span class="eyebrow">Como comprar</span>
@@ -982,6 +1134,8 @@ ul{margin:0;padding:0;list-style:none}
 
 <!-- ============ FAQ ============ -->
 <section class="section faq" id="faq">
+  <span class="scale-edge" aria-hidden="true"></span>
+  <div class="lab-paper lab-paper--light" aria-hidden="true" style="mask-image:linear-gradient(180deg,#000,transparent 50%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
   <div class="wrap faq__in">
     <div class="rv">
       <span class="eyebrow">Dúvidas frequentes</span>
@@ -1032,6 +1186,8 @@ ul{margin:0;padding:0;list-style:none}
 
 <!-- ============ CONTATO ============ -->
 <section class="section contact dark" id="contato">
+  <div class="lab-paper" aria-hidden="true" style="mask-image:radial-gradient(110% 90% at 20% 20%,#000,transparent 70%);-webkit-mask-image:radial-gradient(110% 90% at 20% 20%,#000,transparent 70%)"></div>
+  <div class="bubbles" data-bubbles="10" aria-hidden="true"></div>
   <div class="wrap contact__in">
     <div class="rv">
       <span class="eyebrow">Contato</span>
@@ -1255,6 +1411,45 @@ ul{margin:0;padding:0;list-style:none}
   document.addEventListener("keydown", function(e){
     if (e.key === "Escape" && drawer.classList.contains("is-open")) { closeDrawer(); burger.focus(); }
   });
+
+  /* ---- bolhas subindo no liquido ---- */
+  if (!reduce) {
+    document.querySelectorAll("[data-bubbles]").forEach(function(host){
+      var n = parseInt(host.getAttribute("data-bubbles"), 10) || 10;
+      if (window.innerWidth < 760) n = Math.round(n * 0.55);
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < n; i++) {
+        var b = document.createElement("i");
+        var size = 4 + Math.round(Math.random() * 15);
+        b.style.cssText =
+          "left:" + (Math.random() * 100).toFixed(2) + "%;" +
+          "width:" + size + "px;height:" + size + "px;" +
+          "animation-duration:" + (14 + Math.random() * 16).toFixed(1) + "s;" +
+          "animation-delay:-" + (Math.random() * 26).toFixed(1) + "s";
+        frag.appendChild(b);
+      }
+      host.appendChild(frag);
+    });
+  }
+
+  /* ---- coluna graduada: enche conforme a leitura ---- */
+  var burette = document.getElementById("burette");
+  var burVal = document.getElementById("burVal");
+  if (burette) {
+    var pending = false;
+    var readLevel = function(){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+      burette.style.setProperty("--p", (p * 100).toFixed(2) + "%");
+      burVal.textContent = Math.round(p * 100);
+      pending = false;
+    };
+    window.addEventListener("scroll", function(){
+      if (!pending) { pending = true; requestAnimationFrame(readLevel); }
+    }, {passive:true});
+    window.addEventListener("resize", readLevel, {passive:true});
+    readLevel();
+  }
 
   /* ---- reveal on scroll ---- */
   var items = document.querySelectorAll(".rv");
